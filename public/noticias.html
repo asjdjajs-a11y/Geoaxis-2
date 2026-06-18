@@ -396,11 +396,13 @@ function escapeHtml(text){
 }
 function cleanText(text){
   return String(text||'')
-    .replace(/<[^>]*>/g,' ')
     .replace(/&nbsp;/g,' ')
-    .replace(/&amp;/g,'&')
+    .replace(/&lt;/g,'<')
+    .replace(/&gt;/g,'>')
     .replace(/&#39;/g,"'")
     .replace(/&quot;/g,'"')
+    .replace(/&amp;/g,'&')
+    .replace(/<[^>]*>/g,' ')
     .replace(/\s+/g,' ')
     .trim();
 }
@@ -430,7 +432,7 @@ function extractImageFromDescription(raw){
   return '';
 }
 function imageFor(item){
-  if(item && item.imageUrl) return item.imageUrl;
+  if(item && item.imageUrl) return '/api/img?u='+encodeURIComponent(item.imageUrl);
   var cat=item && item.category;
   return (cat && fallbackImages[cat]) ? fallbackImages[cat] : 'assets/geoaxis-news-card-approved.png';
 }
