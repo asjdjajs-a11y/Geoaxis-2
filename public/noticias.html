@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="description" content="Noticias mineras en tiempo real sobre cobre, litio, Codelco y el mercado minero en Chile y el mundo."/><meta property="og:type" content="website"/><meta property="og:title" content="Panorama minero | GeoAxis"/><meta property="og:description" content="Noticias mineras en tiempo real sobre cobre, litio, Codelco y el mercado minero en Chile y el mundo."/><meta property="og:image" content="assets/geoaxis-news-cover.webp"/><meta property="og:locale" content="es_CL"/><meta name="twitter:card" content="summary_large_image"/>
+<title>Panorama minero | GeoAxis</title><link href="favicon.ico" rel="icon" type="image/x-icon"/><link href="assets/geoaxis-favicon.png" rel="icon" sizes="512x512" type="image/png"/><link href="assets/geoaxis-favicon.png" rel="apple-touch-icon"/>
+<style>
+:root{
+  --bg:#f5f2ea;--paper:#fffdf8;--ink:#26221d;--muted:#6e665c;--line:rgba(81,62,45,.12);
+  --copper:#b85f28;--copper2:#e9823a;--gold:#d9a441;--steel:#233041;--slate:#34312e;
+  --shadow:0 24px 60px rgba(51,38,25,.12);--shadow-soft:0 16px 38px rgba(51,38,25,.10);--radius:28px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 0%,rgba(232,130,58,.14),transparent 32%),radial-gradient(circle at 92% 10%,rgba(35,48,65,.11),transparent 31%),linear-gradient(180deg,#fbf8f1 0%,var(--bg) 100%)}
+a{color:inherit;text-decoration:none}button{font:inherit}.app{min-height:100vh;display:flex;flex-direction:column}
+.header{position:fixed;inset:0 0 auto 0;z-index:50;height:78px;background:rgba(245,235,220,.72);backdrop-filter:blur(18px);border-bottom:1px solid rgba(184,95,40,.16);box-shadow:0 10px 28px rgba(51,38,25,.12)}
+.header-inner{max-width:1180px;margin:auto;height:100%;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:28px}.brand{display:flex;align-items:center;gap:12px;cursor:pointer;min-width:max-content}.logo-mark{width:46px;height:46px;filter:drop-shadow(0 8px 14px rgba(184,95,40,.18))}.brand-wordmark{display:flex;align-items:center;gap:2px;font-weight:820;letter-spacing:.01em;font-size:1.15rem;line-height:1;color:#26221d}.wordmark-symbol{width:20px;height:20px;display:inline-block;vertical-align:-3px;margin:0 1px;filter:drop-shadow(0 5px 8px rgba(184,95,40,.20))}.brand-subtitle{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:#756a5e;font-weight:700;margin-top:4px}.nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nav a{border:0;background:transparent;color:#51483d;cursor:pointer;padding:10px 12px;border-radius:999px;font-weight:720;font-size:.84rem;transition:background .22s ease,color .22s ease,transform .22s ease,box-shadow .22s ease}.nav a:hover{background:rgba(184,95,40,.12);color:#b85f28;transform:translateY(-1px)}.nav a.active{background:rgba(38,34,29,.10);color:#26221d;box-shadow:0 10px 22px rgba(0,0,0,.14)}
+main{flex:1;padding-top:78px}.container{max-width:1180px;margin:auto;padding:38px 24px 52px}.kicker{color:var(--copper);font-weight:900;letter-spacing:.17em;text-transform:uppercase;font-size:.72rem;margin-bottom:10px}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px}.title-wrap h1{font-size:clamp(2.15rem,4vw,3.55rem);line-height:1;letter-spacing:-.055em;margin:0 0 10px}.title-wrap p{font-size:clamp(.98rem,1.35vw,1.08rem);line-height:1.65;color:var(--muted);margin:0;max-width:660px}.mini-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.refresh-btn{border:1px solid rgba(81,62,45,.14);background:#26221d;color:#fffdf8;border-radius:999px;padding:11px 16px;font-weight:850;cursor:pointer;box-shadow:0 14px 26px rgba(35,48,65,.16);transition:.2s}.refresh-btn:hover{transform:translateY(-1px);background:#3a332c}.refresh-btn:disabled{opacity:.62;cursor:not-allowed;transform:none}.update-chip{border:1px solid rgba(81,62,45,.11);background:#fff7ec;color:#6e665c;border-radius:999px;padding:10px 13px;font-size:.78rem;font-weight:780;white-space:nowrap}
+.filters-bar{position:sticky;top:78px;z-index:20;margin:0 0 22px;padding:12px;background:rgba(255,253,248,.74);backdrop-filter:blur(14px);border:1px solid rgba(81,62,45,.10);border-radius:22px;box-shadow:0 16px 34px rgba(51,38,25,.08);display:flex;gap:8px;flex-wrap:wrap}.filter-btn{border:1px solid rgba(81,62,45,.12);background:#fff;color:#51483d;border-radius:999px;font-weight:850;cursor:pointer;transition:.2s;padding:10px 14px;font-size:.84rem}.filter-btn:hover{background:rgba(184,95,40,.10);color:var(--copper);transform:translateY(-1px)}.filter-btn.active{background:var(--ink);color:#fffdf8}
+.news-shell{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:18px;align-items:stretch;margin-bottom:18px}.featured-card,.news-card{background:rgba(255,253,248,.90);border:1px solid rgba(81,62,45,.12);box-shadow:var(--shadow-soft);border-radius:26px;overflow:hidden}.featured-card{display:grid;grid-template-columns:.95fr 1.05fr;min-height:380px}.featured-image,.card-image{background:linear-gradient(180deg,rgba(35,48,65,.08),rgba(35,48,65,.38)),var(--img,url("assets/mineria-bg-poster.webp")) center/cover no-repeat;position:relative;min-height:230px}.image-label{position:absolute;left:14px;right:14px;bottom:14px;color:#fffdf8;letter-spacing:.10em;font-weight:900;font-size:.62rem;background:rgba(38,34,29,.50);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.20);border-radius:999px;padding:8px 10px;text-transform:uppercase;text-align:center}.featured-body{padding:30px;display:flex;flex-direction:column;justify-content:center}.tag-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.tag{display:inline-flex;align-items:center;border-radius:999px;background:#fff2e8;color:var(--copper);font-weight:900;font-size:.66rem;text-transform:uppercase;letter-spacing:.11em;padding:6px 9px}.source{color:#7a7066;font-size:.78rem;font-weight:760}.featured-body h2{font-size:clamp(1.45rem,2.4vw,2.15rem);line-height:1.08;letter-spacing:-.045em;margin:0 0 12px}.featured-body p{color:var(--muted);line-height:1.66;margin:0 0 18px}.meta{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#8c8176;font-size:.82rem;border-top:1px solid rgba(81,62,45,.08);padding-top:14px}.read-link{font-weight:900;color:var(--copper);white-space:nowrap}.read-link.disabled{color:#9a9188;cursor:default}.side-list{display:grid;gap:14px}.side-item{display:grid;grid-template-columns:120px 1fr;background:rgba(255,253,248,.90);border:1px solid rgba(81,62,45,.11);border-radius:22px;overflow:hidden;box-shadow:0 12px 28px rgba(51,38,25,.08);transition:.2s}.side-item:hover,.news-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-soft);border-color:rgba(184,95,40,.22)}.side-item .card-image{min-height:132px}.side-body{padding:14px}.side-body h3{font-size:.98rem;line-height:1.25;margin:0 0 8px}.side-body .meta{font-size:.74rem;padding-top:10px}.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.news-card{display:flex;flex-direction:column;min-height:320px;transition:.2s}.news-card .card-image{height:145px;min-height:145px}.news-body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}.news-card h3{font-size:1.04rem;line-height:1.28;margin:0 0 10px}.news-card p{color:var(--muted);line-height:1.54;font-size:.9rem;margin:0 0 14px;flex:1}.empty{padding:26px;border-radius:20px;background:#fffaf3;border:1px solid rgba(81,62,45,.09);color:var(--muted);line-height:1.6;margin-top:18px}.footer{background:#2d2a27;color:#fffdf8;margin-top:auto}.footer-inner{max-width:1180px;margin:auto;padding:30px 24px 26px;display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:44px;border-bottom:1px solid rgba(255,255,255,.06)}.footer-wordmark{display:flex;align-items:center;gap:6px;font-size:1.7rem;font-weight:850;letter-spacing:-.02em}.footer-symbol{width:30px;height:30px}.footer p,.footer li{color:#c7bcb0;line-height:1.65}.footer h4{color:#e9823a;text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;margin:0 0 16px}.footer-badge{display:inline-block;margin-top:8px;background:#403933;border:1px solid rgba(255,255,255,.08);color:#e9823a;border-radius:999px;padding:7px 12px;font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;font-weight:900}.footer-list{list-style:none;padding:0;margin:0;display:grid;gap:9px}.footer-list strong{color:#e9823a;text-transform:uppercase;font-size:.65rem;letter-spacing:.12em;margin-right:7px}.footer-small{font-size:.82rem;color:#8f867c!important;font-style:italic}.footer-links{display:flex;gap:22px;margin-top:12px;flex-wrap:wrap}.footer-links a{background:transparent;border:0;color:#c7bcb0;text-transform:uppercase;font-size:.62rem;letter-spacing:.14em;font-weight:900;text-decoration:underline;text-underline-offset:5px;cursor:pointer;padding:0}.footer-links a:hover{color:#fffdf8}.copyright{text-align:center;color:#8f867c;font-size:.75rem;padding:16px 20px}
+@media(max-width:1050px){.header{height:auto}.header-inner{align-items:flex-start;flex-direction:column;padding:14px 20px}.nav{justify-content:flex-start}main{padding-top:132px}.filters-bar{top:132px}.page-head,.footer-inner{grid-template-columns:1fr;display:block}.mini-actions{justify-content:flex-start;margin-top:16px}.news-shell,.featured-card{grid-template-columns:1fr}.news-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.container{padding:28px 18px 44px}.title-wrap h1{font-size:2.65rem}.filters-bar{position:relative;top:auto}.featured-body{padding:22px}.side-item{grid-template-columns:1fr}.side-item .card-image{height:150px}.news-grid{grid-template-columns:1fr}.nav{gap:4px}.nav a{font-size:.78rem;padding:8px 9px}.footer-inner{grid-template-columns:1fr}}
+
+.chile-chip{cursor:pointer;border:1px solid rgba(184,95,40,.16)}
+.chile-chip:hover{background:rgba(184,95,40,.12);color:var(--copper);transform:translateY(-1px)}
+.chile-chip.active{background:var(--ink);color:#fffdf8;border-color:transparent}
+
+.search-panel{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 16px;padding:14px 16px;border-radius:24px}
+.search-box{display:flex;align-items:center;gap:10px;flex:1;min-width:240px;background:#fff;border:1px solid rgba(81,62,45,.10);border-radius:999px;padding:10px 14px}
+.search-box span{color:var(--copper);font-size:1.15rem;font-weight:900}
+.search-box input{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-weight:650}
+.search-box input::placeholder{color:#9a9086;font-weight:600}
+.search-meta{color:var(--muted);font-size:.86rem;font-weight:750;white-space:nowrap}
+.load-more-row{display:flex;justify-content:center;margin:26px 0 6px}
+.load-more-btn{border:1px solid rgba(81,62,45,.14);background:#26221d;color:#fffdf8;border-radius:999px;padding:12px 18px;font-weight:900;cursor:pointer;box-shadow:0 14px 28px rgba(35,48,65,.15)}
+.load-more-btn:hover{transform:translateY(-1px);background:#3a332c}
+.load-more-btn[hidden]{display:none}
+
+.news-card,.side-item,.featured-card{animation:newsFadeIn .22s ease both}
+@keyframes newsFadeIn{from{opacity:.72;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+@media (max-width:760px){.search-panel{align-items:stretch;flex-direction:column}.search-meta{white-space:normal}}
+
+/* Mercado integrado en Panorama Minero */
+.market-panel{display:none;margin:0 0 24px;padding:22px}
+.market-panel.visible{display:block}
+.market-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.market-head h2{margin:0 0 6px;font-size:1.42rem;letter-spacing:-.03em}
+.market-head p{margin:0;color:var(--muted);line-height:1.55;max-width:680px}
+.market-status{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;background:#fffaf2;border:1px solid rgba(184,95,40,.16);border-radius:20px;padding:14px 16px;color:var(--muted);margin-bottom:16px}
+.market-status strong{color:var(--ink)}
+.market-status .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#6b8f71;margin-right:8px;box-shadow:0 0 0 6px rgba(107,143,113,.14)}
+.market-status.warning .dot{background:var(--gold);box-shadow:0 0 0 6px rgba(217,164,65,.18)}
+.market-status.error .dot{background:#bf4f3f;box-shadow:0 0 0 6px rgba(191,79,63,.14)}
+.market-refresh{border:0;border-radius:999px;background:var(--ink);color:#fffdf8;padding:10px 14px;font-weight:850;cursor:pointer}
+.market-refresh:hover{transform:translateY(-1px)}
+.live-widget{background:#fffdf8;border:1px solid rgba(81,62,45,.10);border-radius:22px;overflow:hidden;min-height:72px;box-shadow:0 14px 34px rgba(51,38,25,.06);margin-bottom:16px}
+.live-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.live-card{position:relative;overflow:hidden;background:#fffaf2;border:1px solid rgba(81,62,45,.10);border-radius:22px;padding:18px;box-shadow:0 14px 34px rgba(51,38,25,.07)}
+.live-card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--copper),var(--copper2),var(--gold));opacity:.85}
+.live-card .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:900}
+.live-card .price{display:block;color:var(--copper);font-size:1.65rem;font-weight:950;line-height:1;margin:12px 0 8px}
+.live-card .change{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;font-size:.76rem;font-weight:900;background:rgba(107,143,113,.13);color:#4e7455}
+.live-card .change.down{background:rgba(191,79,63,.12);color:#a84839}
+.live-card .change.flat{background:rgba(217,164,65,.15);color:#9a6f20}
+.live-card .meta{display:block;margin-top:12px;color:var(--muted);font-size:.82rem;line-height:1.45}
+.source-pill{display:inline-flex;margin-top:12px;border-radius:999px;background:#fff;border:1px solid rgba(81,62,45,.10);padding:6px 9px;color:#6d6258;font-size:.72rem;font-weight:850}
+.market-note-mini{margin:14px 0 0;color:#8b8177;font-size:.82rem;line-height:1.45}
+@media (max-width:900px){.live-grid{grid-template-columns:1fr 1fr}.market-status{align-items:flex-start}.live-card .price{font-size:1.45rem}}
+@media (max-width:560px){.live-grid{grid-template-columns:1fr}.market-head{align-items:flex-start}}
+
+/* Profundización: tarjetas-botón y páginas internas */
+.deep-dive-strip{margin-top:28px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.deep-card{display:block;text-decoration:none;color:inherit;background:rgba(255,253,248,.92);border:1px solid rgba(81,62,45,.10);box-shadow:0 16px 30px rgba(35,26,20,.08);border-radius:22px;padding:18px;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.deep-card:hover{transform:translateY(-4px);box-shadow:0 22px 42px rgba(35,26,20,.13);border-color:rgba(184,95,40,.30)}
+.deep-card .deep-icon{width:42px;height:42px;border-radius:16px;background:linear-gradient(135deg,rgba(184,95,40,.18),rgba(227,177,91,.22));display:grid;place-items:center;font-size:1.25rem;margin-bottom:12px}
+.deep-card strong{display:block;font-size:1rem;margin-bottom:7px;color:var(--ink)}
+.deep-card span{display:block;font-size:.9rem;line-height:1.45;color:var(--muted)}
+.deep-card .deep-action{margin-top:12px;display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:850;color:var(--copper);letter-spacing:.02em}
+.impact-card.detail-link{display:block;text-decoration:none;color:inherit;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.impact-card.detail-link:hover{transform:translateY(-5px);box-shadow:0 24px 42px rgba(35,26,20,.13);border-color:rgba(184,95,40,.30)}
+.detail-pill{display:inline-flex;margin-top:14px;padding:7px 10px;border-radius:999px;background:rgba(184,95,40,.10);color:var(--copper);font-size:.78rem;font-weight:900}
+.inline-cta{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:11px 14px;border-radius:999px;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--copper),#d98d43);font-weight:850;box-shadow:0 14px 24px rgba(184,95,40,.20)}
+.detail-shell{margin-top:28px;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+.detail-panel{background:rgba(255,253,248,.92);border:1px solid rgba(81,62,45,.10);box-shadow:var(--shadow);border-radius:30px;padding:30px}
+.detail-panel h3{margin:0 0 14px;font-size:1.35rem}
+.detail-panel p{color:var(--muted);line-height:1.7;margin:0 0 14px}
+.detail-list{display:grid;gap:12px;margin-top:18px}
+.detail-item{padding:15px;border-radius:18px;background:#fffaf2;border:1px solid rgba(81,62,45,.08)}
+.detail-item strong{display:block;color:var(--ink);margin-bottom:5px}
+.detail-item span{display:block;color:var(--muted);line-height:1.55;font-size:.95rem}
+.detail-back{margin-top:26px;display:inline-flex;text-decoration:none;color:var(--copper);font-weight:900}
+@media (max-width:1000px){.deep-dive-strip{grid-template-columns:repeat(2,1fr)}.detail-shell{grid-template-columns:1fr}}
+@media (max-width:620px){.deep-dive-strip{grid-template-columns:1fr}}
+
+.nav a.active,
+.nav a[aria-current="page"]{
+  background:rgba(81,62,45,.16);
+  color:#2f261f;
+  box-shadow:inset 0 0 0 1px rgba(81,62,45,.12);
+  border-radius:999px;
+}
+.nav a.active:hover,
+.nav a[aria-current="page"]:hover{
+  background:rgba(81,62,45,.20);
+  color:#2f261f;
+  transform:none;
+}
+
+/* Ajuste visual estable para Panorama Minero */
+.featured-image,
+.card-image{
+  position: relative;
+  overflow: hidden;
+}
+.featured-image::after,
+.card-image::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,20,24,0.04), rgba(10,20,24,0.28));
+  pointer-events: none;
+}
+.image-label:empty{
+  display: none !important;
+}
+.news-card .card-image,
+.side-item .card-image,
+.featured-card .featured-image{
+  background-color: #efe4d3;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Portada estándar GeoAxis para tarjetas de Panorama Minero */
+.featured-image,
+.card-image{
+  background-image: var(--img) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: #142227;
+  min-height: 180px;
+}
+.featured-image{
+  min-height: 320px;
+}
+.side-item .card-image{
+  min-height: 130px;
+}
+.image-label:empty{
+  display: none !important;
+}
+
+/* Portada real GeoAxis News dentro de cada tarjeta */
+.news-cover-frame{
+  position: relative;
+  overflow: hidden;
+  background: #142227 !important;
+  border-radius: inherit;
+}
+.featured-image.news-cover-frame{
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+}
+.side-item .news-cover-frame{
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+}
+.news-card .news-cover-frame{
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+}
+.news-cover-img{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+.featured-image .news-cover-img{
+  object-position: center 46%;
+}
+.side-item .news-cover-img,
+.news-card .news-cover-img{
+  object-position: center 42%;
+}
+.news-cover-frame::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(9,18,22,0.03), rgba(9,18,22,0.16));
+  pointer-events: none;
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="header-inner">
+<a aria-label="Volver al inicio" class="brand" href="index.html">
+<svg aria-hidden="true" class="logo-mark" viewbox="0 0 120 120">
+<defs><lineargradient id="lgGeoAxis" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#233041"></stop><stop offset="50%" stop-color="#b85f28"></stop><stop offset="100%" stop-color="#f0b45e"></stop></lineargradient></defs>
+<path d="M16 86 L60 14 L104 86 Z" fill="url(#lgGeoAxis)"></path>
+<path d="M32 86 L60 42 L88 86 Z" fill="#fff3e3" opacity=".78"></path>
+<path d="M18 88 H104" stroke="#233041" stroke-linecap="round" stroke-width="7"></path>
+<path d="M60 14 V88" opacity=".9" stroke="#233041" stroke-linecap="round" stroke-width="6"></path>
+<circle cx="60" cy="88" fill="#d9a441" r="8" stroke="#233041" stroke-width="4"></circle>
+</svg>
+<div><div class="brand-wordmark"><span>Geo</span><svg aria-hidden="true" class="wordmark-symbol" viewbox="0 0 120 120"><path d="M16 86 L60 14 L104 86 Z" fill="#b85f28"></path><path d="M34 86 L60 44 L86 86 Z" fill="#fff3e3" opacity=".82"></path><path d="M60 16 V88" stroke="#233041" stroke-linecap="round" stroke-width="8"></path><circle cx="60" cy="88" fill="#d9a441" r="9" stroke="#233041" stroke-width="4"></circle></svg><span>xis</span></div><div class="brand-subtitle">Minería &amp; Recursos</div></div>
+</a>
+<nav aria-label="Navegación principal" class="nav"><a href="index.html">Inicio</a><a href="impacto.html">Impacto</a><a href="futuro.html">Futuro</a><a class="nav-link" href="minerales.html">Minerales</a><a aria-current="page" class="active" href="noticias.html">Panorama Minero</a><a href="modelo3d.html">Planos referenciales</a></nav>
+</div>
+</header>
+<main>
+<section class="container">
+<div class="page-head">
+<div class="title-wrap">
+<div class="kicker">Actualidad del sector</div>
+<h1>Panorama Minero</h1>
+<p>Titulares y novedades relevantes sobre minería. Filtra por tema para revisar rápidamente noticias de Chile, cobre, litio, mercado o contexto mundial.</p>
+</div>
+<div class="mini-actions">
+<button class="refresh-btn" id="refreshBtn" type="button">Actualizar</button>
+<button class="update-chip chile-chip" id="chileQuickBtn" type="button">Minería chilena</button>
+<span class="update-chip update-status" hidden="" id="updatedAt">Cargando noticias reales</span>
+</div>
+</div>
+<div aria-label="Buscador de noticias" class="search-panel card">
+<div class="search-box">
+<span aria-hidden="true">⌕</span>
+<input autocomplete="off" id="newsSearch" placeholder="Buscar noticias por tema, fuente o palabra clave..." type="search"/>
+</div>
+<div class="search-meta">
+<span id="resultCount">Mostrando titulares disponibles</span>
+</div>
+</div>
+<div aria-label="Filtros de noticias" class="filters-bar" id="filters">
+<button class="filter-btn active" data-filter="all" type="button">Todo</button>
+<button class="filter-btn" data-filter="Cobre" type="button">Cobre</button>
+<button class="filter-btn" data-filter="Litio" type="button">Litio</button>
+<button class="filter-btn" data-filter="Mundo" type="button">Mundo</button>
+<button class="filter-btn" data-filter="Mercado" type="button">Mercado</button>
+</div>
+<section aria-label="Indicadores de mercado minero" class="market-panel card" id="marketPanel">
+<div class="market-head">
+<div>
+<div class="kicker">Mercado minero</div>
+<h2>Indicadores de referencia</h2>
+<p>Precios y señales rápidas para acompañar las noticias de mercado. En la versión publicada, este bloque podrá actualizarse con mayor estabilidad.</p>
+</div>
+</div>
+<div class="market-status warning" id="marketStatus">
+<div><span class="dot"></span><strong>Indicadores</strong> · esperando actualización</div>
+<div>
+<span id="lastUpdate">Datos de respaldo hasta conectar fuente estable</span>
+<button class="market-refresh" onclick="updateMarket(true)" type="button">Actualizar mercado</button>
+</div>
+</div>
+<div aria-label="Cinta de precios de TradingView" class="live-widget">
+<div class="tradingview-widget-container">
+<div class="tradingview-widget-container__widget"></div>
+<script async="" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" type="text/javascript">
+          {
+            "symbols": [
+              {"proName": "COMEX:HG1!", "title": "Cobre"},
+              {"proName": "COMEX:GC1!", "title": "Oro"},
+              {"proName": "COMEX:SI1!", "title": "Plata"},
+              {"proName": "TVC:DXY", "title": "Dólar Index"}
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "light",
+            "isTransparent": true,
+            "displayMode": "adaptive",
+            "locale": "es"
+          }
+          </script>
+</div>
+</div>
+<div class="live-grid">
+<article class="live-card" data-symbol="HG=F">
+<div class="label">Cobre · futuros COMEX</div>
+<strong class="price" id="price-HG">US$ 6,1000/lb</strong>
+<span class="change flat" id="change-HG">respaldo</span>
+<span class="meta" id="meta-HG">Unidad: US$/lb · actualización automática cada 5 min.</span>
+<div class="source-pill">Yahoo Finance / TradingView</div>
+</article>
+<article class="live-card" data-symbol="GC=F">
+<div class="label">Oro · futuros COMEX</div>
+<strong class="price" id="price-GC">US$ 3.400/oz</strong>
+<span class="change flat" id="change-GC">respaldo</span>
+<span class="meta" id="meta-GC">Unidad: US$/oz · referencia internacional.</span>
+<div class="source-pill">Yahoo Finance / TradingView</div>
+</article>
+<article class="live-card" data-symbol="SI=F">
+<div class="label">Plata · futuros COMEX</div>
+<strong class="price" id="price-SI">US$ 39/oz</strong>
+<span class="change flat" id="change-SI">respaldo</span>
+<span class="meta" id="meta-SI">Unidad: US$/oz · referencia internacional.</span>
+<div class="source-pill">Yahoo Finance / TradingView</div>
+</article>
+<article class="live-card" data-symbol="LITHIUM">
+<div class="label">Litio · referencia Chile</div>
+<strong class="price" id="price-LI">US$ 20.750/t</strong>
+<span class="change flat" id="change-LI">referencial</span>
+<span class="meta">El litio no tiene un ticker único equivalente al cobre; se mantiene como referencia sectorial.</span>
+<div class="source-pill">COCHILCO</div>
+</article>
+</div>
+<p class="market-note-mini">En modo ZIP/local, estos precios pueden quedar como respaldo si el navegador bloquea la consulta. Para tiempo real estable se conectará mejor cuando GeoAxis esté publicado.</p>
+</section>
+<div class="news-shell" id="topArea"></div>
+<div class="news-grid" id="newsGrid"></div>
+<div class="load-more-row">
+<button class="load-more-btn" id="loadMoreBtn" type="button">Cargar más noticias</button>
+</div>
+<div class="empty" hidden="" id="emptyState">No hay titulares para este filtro o búsqueda por ahora.</div>
+</section>
+</main>
+<footer class="footer">
+<div class="footer-inner">
+<div>
+<div class="footer-wordmark"><span>Geo</span><svg aria-hidden="true" class="footer-symbol" viewbox="0 0 120 120"><path d="M16 86 L60 14 L104 86 Z" fill="#b85f28"></path><path d="M34 86 L60 44 L86 86 Z" fill="#fff3e3" opacity=".82"></path><path d="M60 16 V88" stroke="#fffdf8" stroke-linecap="round" stroke-width="8"></path><circle cx="60" cy="88" fill="#d9a441" r="9" stroke="#fffdf8" stroke-width="4"></circle></svg><span>xis</span></div>
+<p><em>Divulgación académica y análisis técnico sobre minería. Sede: Concepción, Biobío, Chile.</em></p>
+<span class="footer-badge">Enfoque Académico-Industrial</span>
+</div>
+<div>
+<h4>Canales de Contacto</h4>
+<ul class="footer-list">
+<li><strong>Tel:</strong> +56 9 4195 5085</li>
+<li><strong>Email:</strong> geoaxis.udec.cl@gmail.com</li>
+<li><strong>Sede:</strong> Concepción, Biobío, Chile</li>
+</ul>
+</div>
+<div>
+<h4>Horario de Atención</h4>
+<p>Lunes a Viernes: 09:00 - 18:00</p>
+<p class="footer-small">Consultas técnicas disponibles vía correo electrónico de 09:00 a 18:00 horas.</p>
+<div class="footer-links"><a href="documentacion.html">Documentación</a><a href="reportes.html">Reportes</a><a href="fuentes.html">Fuentes</a></div>
+</div>
+</div>
+<div class="copyright">© 2026 GeoAxis | Proyecto educativo sobre minería</div>
+</footer>
+</div>
+<script>
+const topArea=document.getElementById('topArea');
+const newsGrid=document.getElementById('newsGrid');
+const emptyState=document.getElementById('emptyState');
+const newsSearch=document.getElementById('newsSearch');
+const resultCount=document.getElementById('resultCount');
+const loadMoreBtn=document.getElementById('loadMoreBtn');
+const marketPanel=document.getElementById('marketPanel');
+const refreshBtn=document.getElementById('refreshBtn');
+const updatedAt=document.getElementById('updatedAt');
+const chileQuickBtn=document.getElementById('chileQuickBtn');
+const filters=[...document.querySelectorAll('.filter-btn')];
+
+let currentFilter='all';
+let currentNews=[];
+let searchTerm='';
+let visibleLimit=4;
+
+const fallbackImages={
+  Cobre:'assets/extraccion_minera.webp',
+  Litio:'assets/procesamiento_minero.webp',
+  Chile:'assets/panorama_news_cover.webp',
+  Mundo:'assets/transporte_minero.webp',
+  Mercado:'assets/exploracion_minera.webp'
+};
+
+const newsFeeds=[
+  {
+    name:'Google News Chile',
+    category:null,
+    url:'https://news.google.com/rss/search?q='+encodeURIComponent('minería Chile cobre litio Codelco mercado minero when:21d')+'&hl=es-419&gl=CL&ceid=CL:es-419'
+  },
+  {
+    name:'Google News Mundo',
+    category:'Mundo',
+    url:'https://news.google.com/rss/search?q='+encodeURIComponent('global mining copper lithium gold silver industry when:21d')+'&hl=en-US&gl=US&ceid=US:en'
+  },
+  {
+    name:'Google News Minería mundial',
+    category:'Mundo',
+    url:'https://news.google.com/rss/search?q='+encodeURIComponent('minería mundial cobre litio oro plata industria minera when:21d')+'&hl=es-419&gl=US&ceid=US:es-419'
+  }
+];
+
+function escapeHtml(text){
+  return String(text||'').replace(/[&<>"']/g,function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
+}
+function cleanText(text){
+  return String(text||'')
+    .replace(/<[^>]*>/g,' ')
+    .replace(/&nbsp;/g,' ')
+    .replace(/&amp;/g,'&')
+    .replace(/&#39;/g,"'")
+    .replace(/&quot;/g,'"')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function inferCategory(text, forced){
+  if(forced==='Mundo') return 'Mundo';
+  const t=String(text||'').toLowerCase();
+  if(t.includes('litio')||t.includes('lithium')) return 'Litio';
+  if(t.includes('cobre')||t.includes('copper')||t.includes('codelco')) return 'Cobre';
+  if(t.includes('precio')||t.includes('mercado')||t.includes('bolsa')||t.includes('dólar')||t.includes('dolar')||t.includes('price')) return 'Mercado';
+  if(t.includes('chile')||t.includes('chilena')||t.includes('chileno')) return 'Chile';
+  return forced || 'Mundo';
+}
+function formatDate(value){
+  if(!value) return 'Fecha no disponible';
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
+}
+function extractImageFromDescription(raw){
+  const text=String(raw||'');
+  const match=text.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if(match && match[1]){
+    let image=match[1].replace(/&amp;/g,'&');
+    if(image.startsWith('//')) image='https:'+image;
+    return image;
+  }
+  return '';
+}
+function imageFor(item){
+  if(item && item.imageUrl) return item.imageUrl;
+  var cat=item && item.category;
+  return (cat && fallbackImages[cat]) ? fallbackImages[cat] : 'assets/geoaxis-news-card-approved.png';
+}
+function cssUrl(url){
+  return 'url("'+String(url||'').replace(/"/g,'%22')+'")';
+}
+function renderImageLabel(item){
+  const label=imageLabel(item);
+  return label ? '<span class="image-label">'+escapeHtml(label)+'</span>' : '';
+}
+function imageLabel(item){
+  return '';
+}
+function renderNewsCover(item){
+  var cat=item && item.category;
+  var fallback=(cat && fallbackImages[cat]) ? fallbackImages[cat] : 'assets/geoaxis-news-card-approved.png';
+  var src=imageFor(item);
+  var alt=(item && item.title) ? item.title : 'Noticia minera';
+  return '<img class="news-cover-img" src="'+escapeHtml(src)+'" alt="'+escapeHtml(alt)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\''+fallback+'\';">';
+}
+function linkMarkup(item, short){
+  if(item.url && item.url !== '#'){
+    return '<a class="read-link" href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener">'+(short?'Leer':'Leer fuente')+'</a>';
+  }
+  return '<span class="read-link disabled">'+(short?'Pendiente':'Fuente pendiente')+'</span>';
+}
+function getFilteredNews(){
+  const base=currentFilter==='all'?currentNews:currentNews.filter(function(item){return item.category===currentFilter;});
+  const q=searchTerm.trim().toLowerCase();
+  if(!q) return base;
+  return base.filter(function(item){
+    const haystack=[item.title,item.summary,item.source,item.category,item.date].join(' ').toLowerCase();
+    return haystack.includes(q);
+  });
+}
+function updateResultText(total, showing){
+  if(!resultCount) return;
+  const filterName=currentFilter==='all'?'todas las categorías':(currentFilter==='Chile'?'minería chilena':currentFilter);
+  const searchText=searchTerm.trim()?' · búsqueda: “'+searchTerm.trim()+'”':'';
+  const moreText=total>showing?' · quedan '+(total-showing)+' por cargar':'';
+  resultCount.textContent='Mostrando '+showing+' de '+total+' titulares · '+filterName+searchText+moreText;
+}
+function updateLoadMoreButton(total, showing){
+  if(!loadMoreBtn) return;
+  const remaining=Math.max(total-showing,0);
+  loadMoreBtn.hidden=remaining<=0;
+  loadMoreBtn.textContent=remaining>0?'Cargar más noticias ('+remaining+')':'Todas las noticias cargadas';
+}
+function renderNews(){
+  if(marketPanel) marketPanel.classList.toggle('visible', currentFilter==='Mercado');
+
+  const visible=getFilteredNews();
+  const shown=visible.slice(0,visibleLimit);
+  emptyState.hidden=shown.length>0;
+  updateLoadMoreButton(visible.length, shown.length);
+  updateResultText(visible.length, shown.length);
+
+  if(!shown.length){
+    topArea.innerHTML='';
+    newsGrid.innerHTML='';
+    return;
+  }
+
+  const main=shown[0];
+  const rest=shown.slice(1);
+  const side=rest.slice(0,3);
+  const grid=rest.slice(3);
+
+  topArea.innerHTML=
+    '<article class="featured-card">'+
+      '<div class="featured-image news-cover-frame">'+renderNewsCover(main)+'</div>'+
+      '<div class="featured-body">'+
+        '<div class="tag-row"><span class="tag">'+escapeHtml(main.category)+'</span><span class="source">'+escapeHtml(main.source)+'</span></div>'+
+        '<h2>'+escapeHtml(main.title)+'</h2>'+
+        '<p>'+escapeHtml(main.summary)+'</p>'+
+        '<div class="meta"><span>'+escapeHtml(formatDate(main.date))+'</span>'+linkMarkup(main,false)+'</div>'+
+      '</div>'+
+    '</article>'+
+    '<div class="side-list">'+side.map(function(item){
+      return '<article class="side-item">'+
+        '<div class="card-image news-cover-frame">'+renderNewsCover(item)+'</div>'+
+        '<div class="side-body">'+
+          '<div class="tag-row"><span class="tag">'+escapeHtml(item.category)+'</span></div>'+
+          '<h3>'+escapeHtml(item.title)+'</h3>'+
+          '<div class="meta"><span>'+escapeHtml(formatDate(item.date))+'</span>'+linkMarkup(item,true)+'</div>'+
+        '</div>'+
+      '</article>';
+    }).join('')+'</div>';
+
+  newsGrid.innerHTML=grid.map(function(item){
+    return '<article class="news-card">'+
+      '<div class="card-image news-cover-frame">'+renderNewsCover(item)+'</div>'+
+      '<div class="news-body">'+
+        '<div class="tag-row"><span class="tag">'+escapeHtml(item.category)+'</span><span class="source">'+escapeHtml(item.source)+'</span></div>'+
+        '<h3>'+escapeHtml(item.title)+'</h3>'+
+        '<p>'+escapeHtml(item.summary)+'</p>'+
+        '<div class="meta"><span>'+escapeHtml(formatDate(item.date))+'</span>'+linkMarkup(item,true)+'</div>'+
+      '</div>'+
+    '</article>';
+  }).join('');
+}
+async function fetchTextWithTimeout(url, timeout){
+  const controller=new AbortController();
+  const timer=setTimeout(function(){controller.abort();}, timeout || 10000);
+  try{
+    const response=await fetch(url,{signal:controller.signal,cache:'no-store'});
+    if(!response.ok) throw new Error('Respuesta no válida: '+response.status);
+    return await response.text();
+  }finally{
+    clearTimeout(timer);
+  }
+}
+function normalizeRss2JsonItem(item, feed){
+  const raw=item.description||item.content||item.summary||'';
+  const title=cleanText(item.title||'');
+  const desc=cleanText(raw||title);
+  const imageUrl=item.thumbnail || (item.enclosure && (item.enclosure.link || item.enclosure.url)) || extractImageFromDescription(raw);
+  return {
+    title:title,
+    source:feed.name || cleanText(item.author||'Fuente minera'),
+    category:inferCategory(title+' '+desc, feed.category),
+    date:item.pubDate||item.date||'',
+    url:item.link||item.url||'#',
+    summary:desc.slice(0,190)+(desc.length>190?'…':''),
+    imageUrl:imageUrl || ''
+  };
+}
+async function fetchFeed(feed){
+  const rss2json='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed.url);
+  try{
+    const raw=await fetchTextWithTimeout(rss2json,10000);
+    const data=JSON.parse(raw);
+    const items=(data.items||[]).slice(0,14).map(function(item){
+      return normalizeRss2JsonItem(item,feed);
+    }).filter(function(item){
+      return item.title && item.url && item.url !== '#';
+    });
+    if(items.length) return items;
+  }catch(error){}
+
+  const proxy='https://api.allorigins.win/raw?url='+encodeURIComponent(feed.url);
+  try{
+    const xmlText=await fetchTextWithTimeout(proxy,10000);
+    const xml=new DOMParser().parseFromString(xmlText,'application/xml');
+    if(xml.querySelector('parsererror')) throw new Error('XML inválido');
+    const items=[...xml.querySelectorAll('item')].slice(0,14).map(function(item){
+      const title=cleanText((item.querySelector('title')||{}).textContent||'');
+      const source=feed.name || cleanText((item.querySelector('source')||{}).textContent||'Fuente minera');
+      const date=(item.querySelector('pubDate')||{}).textContent||'';
+      const url=(item.querySelector('link')||{}).textContent||'#';
+      const rawDesc=(item.querySelector('description')||{}).textContent||'';
+      const desc=cleanText(rawDesc||title);
+      const image=extractImageFromDescription(rawDesc);
+      return {
+        title:title,
+        source:source,
+        category:inferCategory(title+' '+desc, feed.category),
+        date:date,
+        url:url,
+        summary:desc.slice(0,190)+(desc.length>190?'…':''),
+        imageUrl:image||''
+      };
+    }).filter(function(item){
+      return item.title && item.url && item.url !== '#';
+    });
+    return items;
+  }catch(error){
+    return [];
+  }
+}
+async function fetchFromNetlify(){
+  const endpoints=['/api/news','/.netlify/functions/news'];
+  let data=null;
+  for(const ep of endpoints){
+    try{
+      const raw=await fetchTextWithTimeout(ep, 12000);
+      const parsed=JSON.parse(raw);
+      if(parsed && parsed.items){ data=parsed; break; }
+    }catch(e){ data=null; }
+  }
+  if(!data || !data.items) throw new Error('Sin función de noticias');
+  return data.items.map(function(it){
+    const title=cleanText(it.title||'');
+    const desc=cleanText(it.summary||title);
+    return {
+      title:title,
+      source:cleanText(it.source||'Fuente minera'),
+      category:inferCategory(title+' '+desc, null),
+      date:it.date||'',
+      url:it.url||'#',
+      summary:desc.slice(0,190)+(desc.length>190?'…':''),
+      imageUrl:it.imageUrl||''
+    };
+  }).filter(function(it){return it.title && it.url && it.url!=='#';});
+}
+async function fetchRemoteNews(){
+  let results=[];
+
+  // 1) Fuente principal: función serverless propia (trae la imagen real de cada noticia).
+  try{
+    results=await fetchFromNetlify();
+  }catch(error){ results=[]; }
+
+  // 2) Respaldo: feeds vía servicios externos (sin imagen propia) si la función no responde.
+  if(!results.length){
+    const groups=await Promise.all(newsFeeds.map(function(feed){
+      return fetchFeed(feed).catch(function(){return [];});
+    }));
+    groups.forEach(function(group){results=results.concat(group);});
+  }
+
+  const seen=new Set();
+  const clean=results.filter(function(item){
+    const key=item.title.toLowerCase().slice(0,90);
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0,32);
+
+  if(!clean.length) throw new Error('No se recibieron titulares reales');
+  return clean;
+}
+function showRealNewsError(){
+  currentNews=[];
+  topArea.innerHTML='';
+  newsGrid.innerHTML='';
+  emptyState.hidden=false;
+  emptyState.innerHTML='<strong>No se pudieron cargar noticias reales en este momento.</strong><br>La sección usa fuentes reales externas. Revisa la conexión o presiona Actualizar.';
+  updatedAt.hidden=false;
+  updatedAt.textContent='No se pudieron cargar noticias reales';
+  updateLoadMoreButton(0,0);
+  updateResultText(0,0);
+}
+async function loadRealNews(manual){
+  if(refreshBtn){refreshBtn.disabled=true;refreshBtn.textContent=manual?'Actualizando...':'Cargando...';}
+  updatedAt.hidden=false;
+  updatedAt.textContent='Cargando noticias reales...';
+  try{
+    currentNews=await fetchRemoteNews();
+    visibleLimit=4;
+    const withImages=currentNews.filter(function(n){return !!n.imageUrl;}).length;
+    updatedAt.textContent='Noticias reales con imagen de cada medio · '+new Date().toLocaleString('es-CL',{dateStyle:'short',timeStyle:'short'});
+    renderNews();
+  }catch(error){
+    console.warn('Noticias reales no disponibles:',error);
+    showRealNewsError();
+  }finally{
+    if(refreshBtn){refreshBtn.disabled=false;refreshBtn.textContent='Actualizar';}
+  }
+}
+
+/* Mercado */
+const fallbackMarket = {
+  "HG=F": { id:"HG", price:6.10, change:0 },
+  "GC=F": { id:"GC", price:3400, change:0 },
+  "SI=F": { id:"SI", price:39, change:0 }
+};
+const marketSymbols = Object.keys(fallbackMarket);
+const yahooEndpoint = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + encodeURIComponent(marketSymbols.join(","));
+
+function formatMarketPrice(symbol, value){
+  if(value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+  const n = Number(value);
+  if(symbol === "HG=F") return "US$ " + n.toFixed(4) + "/lb";
+  return "US$ " + n.toLocaleString("es-CL", { maximumFractionDigits: 2 }) + "/oz";
+}
+function paintQuote(symbol, quote, fallback){
+  const info=fallbackMarket[symbol];
+  const priceEl=document.getElementById("price-"+info.id);
+  const changeEl=document.getElementById("change-"+info.id);
+  const metaEl=document.getElementById("meta-"+info.id);
+  if(!priceEl || !changeEl || !metaEl) return;
+  const price=quote && (quote.regularMarketPrice ?? quote.price);
+  const changePct=quote && (quote.regularMarketChangePercent ?? quote.change);
+  const finalPrice=(price!==undefined && price!==null)?price:info.price;
+  const finalChange=(changePct!==undefined && changePct!==null)?changePct:info.change;
+  priceEl.textContent=formatMarketPrice(symbol, finalPrice);
+  const changeNum=Number(finalChange || 0);
+  changeEl.classList.remove("down","flat");
+  if(changeNum<0) changeEl.classList.add("down");
+  if(changeNum===0 || fallback) changeEl.classList.add("flat");
+  changeEl.textContent=fallback ? "respaldo" : ((changeNum>=0?"+":"")+changeNum.toFixed(2)+"%");
+  metaEl.textContent=fallback
+    ? "No se pudo leer una fuente en vivo. Dato referencial, no actualizado."
+    : "Actualizado desde fuente externa. La cotización puede estar retrasada.";
+}
+function setStatus(type,text){
+  const box=document.getElementById("marketStatus");
+  if(!box) return;
+  box.classList.remove("warning","error");
+  if(type!=="ok") box.classList.add(type==="error"?"error":"warning");
+  const last=document.getElementById("lastUpdate");
+  if(last) last.textContent=text;
+}
+async function fetchJsonWithFallbacks(url){
+  const urls=[
+    url,
+    "https://api.allorigins.win/raw?url="+encodeURIComponent(url),
+    "https://api.codetabs.com/v1/proxy?quest="+encodeURIComponent(url),
+    "https://corsproxy.io/?"+encodeURIComponent(url)
+  ];
+  for(const candidate of urls){
+    try{
+      const raw=await fetchTextWithTimeout(candidate,9000);
+      return JSON.parse(raw);
+    }catch(error){}
+  }
+  throw new Error("No se pudo leer JSON");
+}
+async function updateMarket(manual){
+  setStatus("warning",manual?"Actualizando precios externos...":"Buscando precios externos...");
+  try{
+    const data=await fetchJsonWithFallbacks(yahooEndpoint);
+    const results=(data && data.quoteResponse && data.quoteResponse.result) || [];
+    if(!results.length) throw new Error("Sin resultados");
+    marketSymbols.forEach(function(symbol){
+      const quote=results.find(function(q){return q.symbol===symbol;});
+      paintQuote(symbol,quote,!quote);
+    });
+    const now=new Date();
+    setStatus("ok","Última lectura externa: "+now.toLocaleString("es-CL",{dateStyle:"short",timeStyle:"medium"}));
+  }catch(error){
+    marketSymbols.forEach(function(symbol){paintQuote(symbol,null,true);});
+    const now=new Date();
+    setStatus("error","No se pudo leer precio externo. Respaldo mostrado · "+now.toLocaleTimeString("es-CL"));
+  }
+}
+window.updateMarket=updateMarket;
+
+/* Eventos */
+filters.forEach(function(btn){
+  btn.addEventListener('click',function(){
+    currentFilter=btn.dataset.filter;
+    visibleLimit=4;
+    filters.forEach(function(b){b.classList.toggle('active',b===btn);});
+    if(chileQuickBtn) chileQuickBtn.classList.remove('active');
+    renderNews();
+  });
+});
+if(chileQuickBtn){
+  chileQuickBtn.addEventListener('click',function(){
+    currentFilter='Chile';
+    visibleLimit=4;
+    filters.forEach(function(b){b.classList.remove('active');});
+    chileQuickBtn.classList.add('active');
+    renderNews();
+  });
+}
+if(newsSearch){
+  newsSearch.addEventListener('input',function(){
+    searchTerm=newsSearch.value;
+    visibleLimit=4;
+    renderNews();
+  });
+}
+if(loadMoreBtn){
+  loadMoreBtn.addEventListener('click',function(){
+    const beforeY=window.scrollY;
+    visibleLimit+=6;
+    renderNews();
+    requestAnimationFrame(function(){window.scrollTo({top:beforeY,behavior:'auto'});});
+  });
+}
+if(refreshBtn){
+  refreshBtn.addEventListener('click',function(){loadRealNews(true);});
+}
+
+loadRealNews(false);
+updateMarket(false);
+setInterval(function(){updateMarket(false);},300000);
+</script>
+</body>
+</html>
