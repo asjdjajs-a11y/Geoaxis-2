@@ -245,7 +245,7 @@ body.resource-view .nav button.active{background:rgba(38,34,29,.10);color:#26221
 
 body.modal-open{overflow:hidden}
 
-@media (max-width:900px){.resource-topbar{align-items:flex-start}.chart-grid{grid-template-columns:1fr}.chart-summary{grid-template-columns:1fr}.chart-frame{padding:8px;border-radius:18px}.chart-lightbox-panel{inset:0;border-radius:0}.chart-lightbox-head{gap:10px;padding:10px 12px}.chart-lightbox-head h4{font-size:1rem}.chart-zoom-toolbar{right:10px;top:10px;border-radius:20px;flex-direction:column}.chart-viewport{padding:0}.chart-canvas{width:100%;height:100%}.chart-canvas svg{width:100%;height:100%}.resource-shell{padding:22px}}
+@media (max-width:900px){.resource-topbar{align-items:flex-start}.chart-grid{grid-template-columns:1fr}.chart-summary{grid-template-columns:1fr}.chart-frame{padding:8px;border-radius:18px}.chart-lightbox-panel{inset:0;border-radius:0}.chart-lightbox-head{flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}.chart-lightbox-head h4{font-size:1rem}.chart-lightbox-actions{width:100%}.chart-lightbox-actions .chart-lightbox-close{flex:1;white-space:nowrap;font-size:.8rem;padding:11px 8px;text-align:center}.chart-zoom-toolbar{right:10px;top:10px;border-radius:20px;flex-direction:column}.chart-zoom-toolbar button{width:44px;height:44px}.chart-viewport{padding:0}.chart-canvas{width:100%;height:100%}.chart-canvas svg{width:100%;height:100%}.resource-shell{padding:22px}}
 
 /* 3D */
 .viewer-wrap{overflow:hidden;border-radius:26px;border:1px solid rgba(81,62,45,.14);background:#111;box-shadow:var(--shadow)}
@@ -669,6 +669,32 @@ function setChartZoom(nextScale, focalX=0, focalY=0){
   applyChartZoom();
 }
 let activeChartType='ebitda';
+function getExpandedViewBoxSize(){
+  // En escritorio se mantiene el lienzo original 1600x880 (sin cambios de comportamiento).
+  // En mobile/tablet, el lienzo se ajusta a la forma real del visor para que el gráfico
+  // ocupe la pantalla en vez de quedar chico en el medio con franjas vacías.
+  const viewportEl=document.getElementById('chartViewport');
+  if(!viewportEl || window.innerWidth > 900){
+    return {w:1600, h:880};
+  }
+  const w=viewportEl.clientWidth || 375;
+  const h=viewportEl.clientHeight || 600;
+  let ratio=w/h;
+  ratio=Math.max(0.6, Math.min(2.1, ratio));
+  const baseW=1500;
+  const baseH=Math.round(baseW/ratio);
+  return {w:baseW, h:baseH};
+}
+function redrawExpandedChart(){
+  const svg=document.getElementById('expandedChart');
+  if(!svg) return;
+  const {w,h}=getExpandedViewBoxSize();
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  const isEbitda = activeChartType === 'ebitda';
+  if(isEbitda){ drawTrendChart('expandedChart', getFilteredData(ebitdaData), ebitdaOpts); }
+  else { drawTrendChart('expandedChart', getFilteredData(prodData), prodOpts); }
+  resetChartZoom(1);
+}
 function openChartLightbox(type){
   activeChartType=type;
   const overlay=document.getElementById('chartLightbox');
@@ -685,16 +711,14 @@ function openChartLightbox(type){
   document.body.classList.add('modal-open');
   resetChartZoom();
   requestAnimationFrame(()=>{
-    if(isEbitda){ drawTrendChart('expandedChart', getFilteredData(ebitdaData), ebitdaOpts); }
-    else { drawTrendChart('expandedChart', getFilteredData(prodData), prodOpts); }
-    resetChartZoom(1);
+    redrawExpandedChart();
   });
 }
 function closeChartLightbox(){
   const overlay=document.getElementById('chartLightbox');
   if(!overlay) return;
-  if(document.fullscreenElement && document.exitFullscreen){
-    document.exitFullscreen().catch(()=>{});
+  if(getFullscreenElement()){
+    exitElementFullscreen().catch(()=>{});
   }
   overlay.classList.remove('open');
   overlay.setAttribute('aria-hidden','true');
@@ -706,7 +730,7 @@ document.querySelectorAll('[data-open-chart]').forEach(button=>{
 });
 document.getElementById('zoomIn')?.addEventListener('click', ()=> setChartZoom(zoomState.scale + 0.25));
 document.getElementById('zoomOut')?.addEventListener('click', ()=> setChartZoom(zoomState.scale - 0.25));
-document.getElementById('zoomReset')?.addEventListener('click', resetChartZoom);
+document.getElementById('zoomReset')?.addEventListener('click', ()=> resetChartZoom());
 const viewport=document.getElementById('chartViewport');
 if(viewport){
   viewport.addEventListener('selectstart', (event)=> event.preventDefault());
@@ -718,32 +742,78 @@ if(viewport){
     const focalY=event.clientY - rect.top - rect.height/2;
     setChartZoom(zoomState.scale + 0.35, focalX, focalY);
   });
+  // Seguimiento multi-touch: permite arrastrar con un dedo y hacer pellizco
+  // (pinch) con dos dedos para acercar/alejar, además del mouse/rueda en escritorio.
+  const activePointers=new Map();
+  let pinchStartDist=0;
+  let pinchStartScale=1;
+  let pinchStartMid={x:0,y:0};
+  let pinchStartPan={x:0,y:0};
+  function viewportRelativePoint(clientX, clientY){
+    const rect=viewport.getBoundingClientRect();
+    return {x:clientX - rect.left - rect.width/2, y:clientY - rect.top - rect.height/2};
+  }
+  function beginPinch(){
+    const pts=Array.from(activePointers.values());
+    pinchStartDist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y) || 1;
+    pinchStartScale=zoomState.scale;
+    pinchStartMid=viewportRelativePoint((pts[0].x+pts[1].x)/2, (pts[0].y+pts[1].y)/2);
+    pinchStartPan={x:zoomState.x, y:zoomState.y};
+    zoomState.isDragging=false;
+    viewport.classList.remove('dragging');
+  }
   viewport.addEventListener('pointerdown', (event)=>{
     event.preventDefault();
-    if(zoomState.scale<=1) return;
-    zoomState.isDragging=true;
-    zoomState.startX=event.clientX;
-    zoomState.startY=event.clientY;
-    zoomState.startPanX=zoomState.x;
-    zoomState.startPanY=zoomState.y;
-    viewport.classList.add('dragging');
-    viewport.setPointerCapture(event.pointerId);
+    try{ viewport.setPointerCapture(event.pointerId); }catch(e){}
+    activePointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
+    if(activePointers.size === 2){
+      beginPinch();
+    }else if(activePointers.size === 1){
+      if(zoomState.scale<=1) return;
+      zoomState.isDragging=true;
+      zoomState.startX=event.clientX;
+      zoomState.startY=event.clientY;
+      zoomState.startPanX=zoomState.x;
+      zoomState.startPanY=zoomState.y;
+      viewport.classList.add('dragging');
+    }
   });
   viewport.addEventListener('pointermove', (event)=>{
-    if(!zoomState.isDragging) return;
-    zoomState.x=zoomState.startPanX + (event.clientX - zoomState.startX);
-    zoomState.y=zoomState.startPanY + (event.clientY - zoomState.startY);
-    applyChartZoom();
+    if(!activePointers.has(event.pointerId)) return;
+    activePointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
+    if(activePointers.size === 2){
+      const pts=Array.from(activePointers.values());
+      const dist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y) || 1;
+      const ratio=dist/pinchStartDist;
+      const next=Math.max(1, Math.min(3, Number((pinchStartScale*ratio).toFixed(2))));
+      zoomState.x=pinchStartMid.x - (next/pinchStartScale)*(pinchStartMid.x - pinchStartPan.x);
+      zoomState.y=pinchStartMid.y - (next/pinchStartScale)*(pinchStartMid.y - pinchStartPan.y);
+      zoomState.scale=next;
+      applyChartZoom();
+    }else if(activePointers.size === 1 && zoomState.isDragging){
+      zoomState.x=zoomState.startPanX + (event.clientX - zoomState.startX);
+      zoomState.y=zoomState.startPanY + (event.clientY - zoomState.startY);
+      applyChartZoom();
+    }
   });
-  viewport.addEventListener('pointerup', (event)=>{
-    zoomState.isDragging=false;
-    viewport.classList.remove('dragging');
+  function endPointer(event){
+    activePointers.delete(event.pointerId);
     try{ viewport.releasePointerCapture(event.pointerId); }catch(e){}
-  });
-  viewport.addEventListener('pointercancel', ()=>{
-    zoomState.isDragging=false;
-    viewport.classList.remove('dragging');
-  });
+    if(activePointers.size === 1 && zoomState.scale>1){
+      const remaining=Array.from(activePointers.values())[0];
+      zoomState.isDragging=true;
+      zoomState.startX=remaining.x;
+      zoomState.startY=remaining.y;
+      zoomState.startPanX=zoomState.x;
+      zoomState.startPanY=zoomState.y;
+      viewport.classList.add('dragging');
+    }else{
+      zoomState.isDragging=false;
+      viewport.classList.remove('dragging');
+    }
+  }
+  viewport.addEventListener('pointerup', endPointer);
+  viewport.addEventListener('pointercancel', endPointer);
   viewport.addEventListener('wheel', (event)=>{
     if(!document.getElementById('chartLightbox')?.classList.contains('open')) return;
     event.preventDefault();
@@ -754,18 +824,47 @@ if(viewport){
   }, {passive:false});
 }
 document.getElementById('chartLightboxClose')?.addEventListener('click', closeChartLightbox);
-document.getElementById('chartNativeFullscreen')?.addEventListener('click', async ()=>{
+// Soporte de pantalla completa entre navegadores (Safari/iOS usa prefijo webkit
+// y en algunos casos no soporta fullscreen en elementos; el botón se oculta ahí).
+function getFullscreenElement(){
+  return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
+}
+function requestElementFullscreen(el){
+  const fn=el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if(fn) return fn.call(el);
+  return Promise.reject(new Error('Fullscreen no soportado'));
+}
+function exitElementFullscreen(){
+  const fn=document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+  if(fn) return fn.call(document);
+  return Promise.reject(new Error('Fullscreen no soportado'));
+}
+function fullscreenSupported(){
+  const el=document.documentElement;
+  return !!(el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen);
+}
+const fullscreenBtn=document.getElementById('chartNativeFullscreen');
+if(fullscreenBtn && !fullscreenSupported()){
+  fullscreenBtn.style.display='none';
+}
+fullscreenBtn?.addEventListener('click', async ()=>{
   const panel=document.querySelector('.chart-lightbox-panel');
   try{
-    if(!document.fullscreenElement && panel?.requestFullscreen){
-      await panel.requestFullscreen();
-    }else if(document.exitFullscreen){
-      await document.exitFullscreen();
+    if(!getFullscreenElement() && panel){
+      await requestElementFullscreen(panel);
+    }else{
+      await exitElementFullscreen();
     }
-    setTimeout(()=>applyChartZoom(), 120);
   }catch(error){
     applyChartZoom();
   }
+});
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+  document.addEventListener(evt, ()=>{
+    if(document.getElementById('chartLightbox')?.classList.contains('open')){
+      setTimeout(()=> redrawExpandedChart(), 120);
+    }
+  });
 });
 document.getElementById('chartLightbox')?.addEventListener('click', (event)=>{
   if(event.target && event.target.id === 'chartLightbox') closeChartLightbox();
@@ -773,10 +872,12 @@ document.getElementById('chartLightbox')?.addEventListener('click', (event)=>{
 document.addEventListener('keydown', (e)=>{
   if(e.key==='Escape') closeChartLightbox();
 });
+let chartResizeTimer=null;
 window.addEventListener('resize', ()=>{
-  if(document.getElementById('chartLightbox')?.classList.contains('open')){
-    applyChartZoom();
-  }
+  if(!document.getElementById('chartLightbox')?.classList.contains('open')) return;
+  applyChartZoom();
+  clearTimeout(chartResizeTimer);
+  chartResizeTimer=setTimeout(()=> redrawExpandedChart(), 180);
 });
 let selectedRange={start:2020,end:2025};
 function getFilteredData(data){
