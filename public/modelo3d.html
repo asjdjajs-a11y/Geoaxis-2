@@ -200,6 +200,41 @@ main{flex:1;padding-top:78px}.container{max-width:1180px;margin:auto;padding:42p
 @media (max-width:760px){
   .planos-refined-hero{padding:26px 22px;border-radius:28px}
   .planos-note{border-radius:20px;align-items:flex-start}
+  
+  /* Mejoras adicionales para móvil en Planos Referenciales */
+  .planos-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  .planos-card {
+    min-height: auto;
+  }
+  
+  .planos-card-label {
+    font-size: 0.95rem;
+    padding: 10px 14px;
+  }
+  
+  .modal {
+    padding: 4px;
+  }
+  
+  .modal-card {
+    border-radius: 16px;
+  }
+  
+  .modal-toolbar {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  
+  .zoom-controls {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .plan-actions{display:none !important}

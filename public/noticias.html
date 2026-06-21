@@ -363,13 +363,12 @@ let currentNews=[];
 let searchTerm='';
 let visibleLimit=4;
 
-const fallbackImages = {
-  Cobre: 'assets/extraccion_minera.webp',
-  Litio: 'assets/procesamiento_minera.webp',
-  Chile: 'assets/panorama_news_cover.webp',
-  Mundo: 'assets/transporte_minera.webp',
-  Mercado: 'assets/exploracion_minera.webp',
-  General: 'assets/geoaxis-news-card-approved.png'
+const fallbackImages={
+  Cobre:'assets/extraccion_minera.webp',
+  Litio:'assets/procesamiento_minero.webp',
+  Chile:'assets/panorama_news_cover.webp',
+  Mundo:'assets/transporte_minero.webp',
+  Mercado:'assets/exploracion_minera.webp'
 };
 
 const newsFeeds=[
@@ -432,20 +431,10 @@ function extractImageFromDescription(raw){
   }
   return '';
 }
-function imageFor(item) {
-  // Si tiene imagen real desde el backend, usarla (a través del proxy)
-  if (item && item.imageUrl) {
-    return '/api/img?u=' + encodeURIComponent(item.imageUrl);
-  }
-  
-  // Si no, usar imagen de respaldo según categoría
-  const cat = item && item.category;
-  if (cat && fallbackImages[cat]) {
-    return fallbackImages[cat];
-  }
-  
-  // Fallback final
-  return fallbackImages['General'] || 'assets/geoaxis-news-card-approved.png';
+function imageFor(item){
+  if(item && item.imageUrl) return '/api/img?u='+encodeURIComponent(item.imageUrl);
+  var cat=item && item.category;
+  return (cat && fallbackImages[cat]) ? fallbackImages[cat] : 'assets/geoaxis-news-card-approved.png';
 }
 function cssUrl(url){
   return 'url("'+String(url||'').replace(/"/g,'%22')+'")';
