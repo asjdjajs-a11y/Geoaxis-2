@@ -245,7 +245,7 @@ body.resource-view .nav button.active{background:rgba(38,34,29,.10);color:#26221
 
 body.modal-open{overflow:hidden}
 
-@media (max-width:900px){.resource-topbar{align-items:flex-start}.chart-grid{grid-template-columns:1fr}.chart-summary{grid-template-columns:1fr}.chart-frame{padding:8px;border-radius:18px}.chart-lightbox-panel{inset:0;border-radius:0}.chart-lightbox-head{flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}.chart-lightbox-head h4{font-size:1rem}.chart-lightbox-actions{width:100%}.chart-lightbox-actions .chart-lightbox-close{flex:1;white-space:nowrap;font-size:.8rem;padding:11px 8px;text-align:center}.chart-zoom-toolbar{right:10px;top:10px;border-radius:20px;flex-direction:column}.chart-zoom-toolbar button{width:44px;height:44px}.chart-viewport{padding:0}.chart-canvas{width:100%;height:100%}.chart-canvas svg{width:100%;height:100%}.resource-shell{padding:22px}}
+@media (max-width:900px){.resource-topbar{align-items:flex-start}.chart-grid{grid-template-columns:1fr}.chart-summary{grid-template-columns:1fr}.chart-frame{padding:8px;border-radius:18px}.chart-lightbox-panel{inset:0;border-radius:0}.chart-lightbox-head{gap:10px;padding:10px 12px}.chart-lightbox-head h4{font-size:1rem}.chart-zoom-toolbar{right:10px;top:10px;border-radius:20px;flex-direction:column}.chart-viewport{padding:0}.chart-canvas{width:100%;height:100%}.chart-canvas svg{width:100%;height:100%}.resource-shell{padding:22px}}
 
 /* 3D */
 .viewer-wrap{overflow:hidden;border-radius:26px;border:1px solid rgba(81,62,45,.14);background:#111;box-shadow:var(--shadow)}
@@ -321,28 +321,7 @@ body.modal-open{overflow:hidden}
   transform:none;
 }
 
-
-/* ===== Menu movil (hamburguesa) ===== */
-.nav-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:14px;background:rgba(184,95,40,.10);cursor:pointer;flex-shrink:0;padding:0;-webkit-tap-highlight-color:transparent}
-.nav-toggle span{display:block;width:20px;height:2px;background:#26221d;border-radius:2px;transition:transform .25s ease,opacity .25s ease}
-.nav-toggle span+span{margin-top:5px}
-.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
-.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-@media (max-width:900px){
-  .header{height:78px;overflow:visible}
-  .header-inner{flex-direction:row;align-items:center;justify-content:space-between;padding:0 18px;height:100%}
-  .brand-subtitle{display:none}
-  .nav-toggle{display:inline-flex}
-  .nav{position:absolute;top:78px;left:0;right:0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:2px;max-height:0;overflow:hidden;padding:0 16px;margin:0;background:rgb(250,243,232);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(184,95,40,.16);box-shadow:0 18px 30px rgba(51,38,25,.16);transition:max-height .32s ease,padding .32s ease}
-  .nav.open{max-height:75vh;padding:10px 16px 18px;overflow-y:auto}
-  .nav a{width:100%;text-align:left;padding:14px 12px;font-size:.96rem;border-radius:14px}
-  main{padding-top:78px}
-  .page{min-height:calc(100vh - 78px)}
-  body.nav-open{overflow:hidden}
-}
-@media (max-width:1050px){.footer-inner{display:grid}}</style>
+</style>
 </head>
 <body class="resource-view">
 <div class="app-shell">
@@ -359,8 +338,7 @@ body.modal-open{overflow:hidden}
 </svg>
 <div><div class="brand-wordmark"><span>Geo</span><svg aria-hidden="true" class="wordmark-symbol" viewbox="0 0 120 120"><path d="M16 86 L60 14 L104 86 Z" fill="#b85f28"></path><path d="M34 86 L60 44 L86 86 Z" fill="#fff3e3" opacity=".82"></path><path d="M60 16 V88" stroke="#233041" stroke-linecap="round" stroke-width="8"></path><circle cx="60" cy="88" fill="#d9a441" r="9" stroke="#233041" stroke-width="4"></circle></svg><span>xis</span></div><div class="brand-subtitle">Minería &amp; Recursos</div></div>
 </button>
-<button aria-controls="primaryNav" aria-expanded="false" aria-label="Abrir menu" class="nav-toggle" id="navToggle" type="button"><span></span><span></span><span></span></button>
-<nav aria-label="Navegación principal" class="nav" id="primaryNav">
+<nav aria-label="Navegación principal" class="nav">
 <a class="nav-link" href="index.html">Inicio</a>
 <a class="nav-link" href="impacto.html">Impacto</a>
 <a class="nav-link" href="futuro.html">Futuro</a>
@@ -669,32 +647,6 @@ function setChartZoom(nextScale, focalX=0, focalY=0){
   applyChartZoom();
 }
 let activeChartType='ebitda';
-function getExpandedViewBoxSize(){
-  // En escritorio se mantiene el lienzo original 1600x880 (sin cambios de comportamiento).
-  // En mobile/tablet, el lienzo se ajusta a la forma real del visor para que el gráfico
-  // ocupe la pantalla en vez de quedar chico en el medio con franjas vacías.
-  const viewportEl=document.getElementById('chartViewport');
-  if(!viewportEl || window.innerWidth > 900){
-    return {w:1600, h:880};
-  }
-  const w=viewportEl.clientWidth || 375;
-  const h=viewportEl.clientHeight || 600;
-  let ratio=w/h;
-  ratio=Math.max(0.6, Math.min(2.1, ratio));
-  const baseW=1500;
-  const baseH=Math.round(baseW/ratio);
-  return {w:baseW, h:baseH};
-}
-function redrawExpandedChart(){
-  const svg=document.getElementById('expandedChart');
-  if(!svg) return;
-  const {w,h}=getExpandedViewBoxSize();
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  const isEbitda = activeChartType === 'ebitda';
-  if(isEbitda){ drawTrendChart('expandedChart', getFilteredData(ebitdaData), ebitdaOpts); }
-  else { drawTrendChart('expandedChart', getFilteredData(prodData), prodOpts); }
-  resetChartZoom(1);
-}
 function openChartLightbox(type){
   activeChartType=type;
   const overlay=document.getElementById('chartLightbox');
@@ -711,14 +663,16 @@ function openChartLightbox(type){
   document.body.classList.add('modal-open');
   resetChartZoom();
   requestAnimationFrame(()=>{
-    redrawExpandedChart();
+    if(isEbitda){ drawTrendChart('expandedChart', getFilteredData(ebitdaData), ebitdaOpts); }
+    else { drawTrendChart('expandedChart', getFilteredData(prodData), prodOpts); }
+    resetChartZoom(1);
   });
 }
 function closeChartLightbox(){
   const overlay=document.getElementById('chartLightbox');
   if(!overlay) return;
-  if(getFullscreenElement()){
-    exitElementFullscreen().catch(()=>{});
+  if(document.fullscreenElement && document.exitFullscreen){
+    document.exitFullscreen().catch(()=>{});
   }
   overlay.classList.remove('open');
   overlay.setAttribute('aria-hidden','true');
@@ -730,7 +684,7 @@ document.querySelectorAll('[data-open-chart]').forEach(button=>{
 });
 document.getElementById('zoomIn')?.addEventListener('click', ()=> setChartZoom(zoomState.scale + 0.25));
 document.getElementById('zoomOut')?.addEventListener('click', ()=> setChartZoom(zoomState.scale - 0.25));
-document.getElementById('zoomReset')?.addEventListener('click', ()=> resetChartZoom());
+document.getElementById('zoomReset')?.addEventListener('click', resetChartZoom);
 const viewport=document.getElementById('chartViewport');
 if(viewport){
   viewport.addEventListener('selectstart', (event)=> event.preventDefault());
@@ -742,78 +696,32 @@ if(viewport){
     const focalY=event.clientY - rect.top - rect.height/2;
     setChartZoom(zoomState.scale + 0.35, focalX, focalY);
   });
-  // Seguimiento multi-touch: permite arrastrar con un dedo y hacer pellizco
-  // (pinch) con dos dedos para acercar/alejar, además del mouse/rueda en escritorio.
-  const activePointers=new Map();
-  let pinchStartDist=0;
-  let pinchStartScale=1;
-  let pinchStartMid={x:0,y:0};
-  let pinchStartPan={x:0,y:0};
-  function viewportRelativePoint(clientX, clientY){
-    const rect=viewport.getBoundingClientRect();
-    return {x:clientX - rect.left - rect.width/2, y:clientY - rect.top - rect.height/2};
-  }
-  function beginPinch(){
-    const pts=Array.from(activePointers.values());
-    pinchStartDist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y) || 1;
-    pinchStartScale=zoomState.scale;
-    pinchStartMid=viewportRelativePoint((pts[0].x+pts[1].x)/2, (pts[0].y+pts[1].y)/2);
-    pinchStartPan={x:zoomState.x, y:zoomState.y};
-    zoomState.isDragging=false;
-    viewport.classList.remove('dragging');
-  }
   viewport.addEventListener('pointerdown', (event)=>{
     event.preventDefault();
-    try{ viewport.setPointerCapture(event.pointerId); }catch(e){}
-    activePointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
-    if(activePointers.size === 2){
-      beginPinch();
-    }else if(activePointers.size === 1){
-      if(zoomState.scale<=1) return;
-      zoomState.isDragging=true;
-      zoomState.startX=event.clientX;
-      zoomState.startY=event.clientY;
-      zoomState.startPanX=zoomState.x;
-      zoomState.startPanY=zoomState.y;
-      viewport.classList.add('dragging');
-    }
+    if(zoomState.scale<=1) return;
+    zoomState.isDragging=true;
+    zoomState.startX=event.clientX;
+    zoomState.startY=event.clientY;
+    zoomState.startPanX=zoomState.x;
+    zoomState.startPanY=zoomState.y;
+    viewport.classList.add('dragging');
+    viewport.setPointerCapture(event.pointerId);
   });
   viewport.addEventListener('pointermove', (event)=>{
-    if(!activePointers.has(event.pointerId)) return;
-    activePointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
-    if(activePointers.size === 2){
-      const pts=Array.from(activePointers.values());
-      const dist=Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y) || 1;
-      const ratio=dist/pinchStartDist;
-      const next=Math.max(1, Math.min(3, Number((pinchStartScale*ratio).toFixed(2))));
-      zoomState.x=pinchStartMid.x - (next/pinchStartScale)*(pinchStartMid.x - pinchStartPan.x);
-      zoomState.y=pinchStartMid.y - (next/pinchStartScale)*(pinchStartMid.y - pinchStartPan.y);
-      zoomState.scale=next;
-      applyChartZoom();
-    }else if(activePointers.size === 1 && zoomState.isDragging){
-      zoomState.x=zoomState.startPanX + (event.clientX - zoomState.startX);
-      zoomState.y=zoomState.startPanY + (event.clientY - zoomState.startY);
-      applyChartZoom();
-    }
+    if(!zoomState.isDragging) return;
+    zoomState.x=zoomState.startPanX + (event.clientX - zoomState.startX);
+    zoomState.y=zoomState.startPanY + (event.clientY - zoomState.startY);
+    applyChartZoom();
   });
-  function endPointer(event){
-    activePointers.delete(event.pointerId);
+  viewport.addEventListener('pointerup', (event)=>{
+    zoomState.isDragging=false;
+    viewport.classList.remove('dragging');
     try{ viewport.releasePointerCapture(event.pointerId); }catch(e){}
-    if(activePointers.size === 1 && zoomState.scale>1){
-      const remaining=Array.from(activePointers.values())[0];
-      zoomState.isDragging=true;
-      zoomState.startX=remaining.x;
-      zoomState.startY=remaining.y;
-      zoomState.startPanX=zoomState.x;
-      zoomState.startPanY=zoomState.y;
-      viewport.classList.add('dragging');
-    }else{
-      zoomState.isDragging=false;
-      viewport.classList.remove('dragging');
-    }
-  }
-  viewport.addEventListener('pointerup', endPointer);
-  viewport.addEventListener('pointercancel', endPointer);
+  });
+  viewport.addEventListener('pointercancel', ()=>{
+    zoomState.isDragging=false;
+    viewport.classList.remove('dragging');
+  });
   viewport.addEventListener('wheel', (event)=>{
     if(!document.getElementById('chartLightbox')?.classList.contains('open')) return;
     event.preventDefault();
@@ -824,47 +732,18 @@ if(viewport){
   }, {passive:false});
 }
 document.getElementById('chartLightboxClose')?.addEventListener('click', closeChartLightbox);
-// Soporte de pantalla completa entre navegadores (Safari/iOS usa prefijo webkit
-// y en algunos casos no soporta fullscreen en elementos; el botón se oculta ahí).
-function getFullscreenElement(){
-  return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
-}
-function requestElementFullscreen(el){
-  const fn=el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-  if(fn) return fn.call(el);
-  return Promise.reject(new Error('Fullscreen no soportado'));
-}
-function exitElementFullscreen(){
-  const fn=document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-  if(fn) return fn.call(document);
-  return Promise.reject(new Error('Fullscreen no soportado'));
-}
-function fullscreenSupported(){
-  const el=document.documentElement;
-  return !!(el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen);
-}
-const fullscreenBtn=document.getElementById('chartNativeFullscreen');
-if(fullscreenBtn && !fullscreenSupported()){
-  fullscreenBtn.style.display='none';
-}
-fullscreenBtn?.addEventListener('click', async ()=>{
+document.getElementById('chartNativeFullscreen')?.addEventListener('click', async ()=>{
   const panel=document.querySelector('.chart-lightbox-panel');
   try{
-    if(!getFullscreenElement() && panel){
-      await requestElementFullscreen(panel);
-    }else{
-      await exitElementFullscreen();
+    if(!document.fullscreenElement && panel?.requestFullscreen){
+      await panel.requestFullscreen();
+    }else if(document.exitFullscreen){
+      await document.exitFullscreen();
     }
+    setTimeout(()=>applyChartZoom(), 120);
   }catch(error){
     applyChartZoom();
   }
-});
-['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
-  document.addEventListener(evt, ()=>{
-    if(document.getElementById('chartLightbox')?.classList.contains('open')){
-      setTimeout(()=> redrawExpandedChart(), 120);
-    }
-  });
 });
 document.getElementById('chartLightbox')?.addEventListener('click', (event)=>{
   if(event.target && event.target.id === 'chartLightbox') closeChartLightbox();
@@ -872,12 +751,10 @@ document.getElementById('chartLightbox')?.addEventListener('click', (event)=>{
 document.addEventListener('keydown', (e)=>{
   if(e.key==='Escape') closeChartLightbox();
 });
-let chartResizeTimer=null;
 window.addEventListener('resize', ()=>{
-  if(!document.getElementById('chartLightbox')?.classList.contains('open')) return;
-  applyChartZoom();
-  clearTimeout(chartResizeTimer);
-  chartResizeTimer=setTimeout(()=> redrawExpandedChart(), 180);
+  if(document.getElementById('chartLightbox')?.classList.contains('open')){
+    applyChartZoom();
+  }
 });
 let selectedRange={start:2020,end:2025};
 function getFilteredData(data){
@@ -936,21 +813,6 @@ const ebitdaOpts={minValue:0,maxValue:ebitdaMax,axisFormatter:(v)=>formatNumber(
 const prodOpts={minValue:prodMin,maxValue:prodMax,axisFormatter:(v)=>(v/1000000).toFixed(2).replace('.',',')+' M',lineColor:'#4a7a63',areaColor:'#b8d1c4',upColor:'#4a7a63',downColor:'#a94e3a',labelOffsets:{'2020':-64,'2021':32,'2022':-58,'2023':34,'2024':-62,'2025':28}};
 updateRangeUI();
 redrawChartsForRange();
-</script>
-
-<script>
-(function(){
-  var toggle=document.getElementById('navToggle');
-  var nav=document.getElementById('primaryNav');
-  if(!toggle||!nav)return;
-  function closeNav(){nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');}
-  function openNav(){nav.classList.add('open');toggle.setAttribute('aria-expanded','true');document.body.classList.add('nav-open');}
-  toggle.addEventListener('click',function(e){e.stopPropagation();nav.classList.contains('open')?closeNav():openNav();});
-  nav.addEventListener('click',function(e){if(e.target.closest('a'))closeNav();});
-  document.addEventListener('click',function(e){if(nav.classList.contains('open')&&!nav.contains(e.target)&&e.target!==toggle&&!toggle.contains(e.target))closeNav();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeNav();});
-  window.addEventListener('resize',function(){if(window.innerWidth>900)closeNav();});
-})();
 </script>
 </body>
 </html>

@@ -321,28 +321,7 @@ body.resource-view .nav button.active{background:rgba(38,34,29,.10);color:#26221
   transform:none;
 }
 
-
-/* ===== Menu movil (hamburguesa) ===== */
-.nav-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:14px;background:rgba(184,95,40,.10);cursor:pointer;flex-shrink:0;padding:0;-webkit-tap-highlight-color:transparent}
-.nav-toggle span{display:block;width:20px;height:2px;background:#26221d;border-radius:2px;transition:transform .25s ease,opacity .25s ease}
-.nav-toggle span+span{margin-top:5px}
-.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
-.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-@media (max-width:900px){
-  .header{height:78px;overflow:visible}
-  .header-inner{flex-direction:row;align-items:center;justify-content:space-between;padding:0 18px;height:100%}
-  .brand-subtitle{display:none}
-  .nav-toggle{display:inline-flex}
-  .nav{position:absolute;top:78px;left:0;right:0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:2px;max-height:0;overflow:hidden;padding:0 16px;margin:0;background:rgb(250,243,232);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(184,95,40,.16);box-shadow:0 18px 30px rgba(51,38,25,.16);transition:max-height .32s ease,padding .32s ease}
-  .nav.open{max-height:75vh;padding:10px 16px 18px;overflow-y:auto}
-  .nav a{width:100%;text-align:left;padding:14px 12px;font-size:.96rem;border-radius:14px}
-  main{padding-top:78px}
-  .page{min-height:calc(100vh - 78px)}
-  body.nav-open{overflow:hidden}
-}
-@media (max-width:1050px){.footer-inner{display:grid}}</style>
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -359,8 +338,7 @@ body.resource-view .nav button.active{background:rgba(38,34,29,.10);color:#26221
 </svg>
 <div><div class="brand-wordmark"><span>Geo</span><svg aria-hidden="true" class="wordmark-symbol" viewbox="0 0 120 120"><path d="M16 86 L60 14 L104 86 Z" fill="#b85f28"></path><path d="M34 86 L60 44 L86 86 Z" fill="#fff3e3" opacity=".82"></path><path d="M60 16 V88" stroke="#233041" stroke-linecap="round" stroke-width="8"></path><circle cx="60" cy="88" fill="#d9a441" r="9" stroke="#233041" stroke-width="4"></circle></svg><span>xis</span></div><div class="brand-subtitle">Minería &amp; Recursos</div></div>
 </button>
-<button aria-controls="primaryNav" aria-expanded="false" aria-label="Abrir menu" class="nav-toggle" id="navToggle" type="button"><span></span><span></span><span></span></button>
-<nav aria-label="Navegación principal" class="nav" id="primaryNav">
+<nav aria-label="Navegación principal" class="nav">
 <a aria-current="page" class="nav-link active" href="index.html">Inicio</a>
 <a class="nav-link" href="impacto.html">Impacto</a>
 <a class="nav-link" href="futuro.html">Futuro</a>
@@ -440,21 +418,6 @@ function setStage(stage){
   document.getElementById('stageTags').innerHTML=data.tags.map(t=>`<span class="tag">${t}</span>`).join('');
 }
 
-</script>
-
-<script>
-(function(){
-  var toggle=document.getElementById('navToggle');
-  var nav=document.getElementById('primaryNav');
-  if(!toggle||!nav)return;
-  function closeNav(){nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');}
-  function openNav(){nav.classList.add('open');toggle.setAttribute('aria-expanded','true');document.body.classList.add('nav-open');}
-  toggle.addEventListener('click',function(e){e.stopPropagation();nav.classList.contains('open')?closeNav():openNav();});
-  nav.addEventListener('click',function(e){if(e.target.closest('a'))closeNav();});
-  document.addEventListener('click',function(e){if(nav.classList.contains('open')&&!nav.contains(e.target)&&e.target!==toggle&&!toggle.contains(e.target))closeNav();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeNav();});
-  window.addEventListener('resize',function(){if(window.innerWidth>900)closeNav();});
-})();
 </script>
 </body>
 </html>
